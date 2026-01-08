@@ -1,18 +1,20 @@
-import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
-import User from "@/models/User";
-import bcrypt from "bcryptjs";
+import { NextResponse } from 'next/server';
+import connectDB from '@/lib/db';
+
+export const dynamic = 'force-dynamic';
+import User from '@/models/user';
+import bcrypt from 'bcryptjs';
 
 export async function GET() {
   await connectDB();
-  const hashedPassword = await bcrypt.hash("admin123", 12);
-  
+  const hashedPassword = await bcrypt.hash('admin123', 12);
+
   await User.create({
-    name: "System Admin",
-    email: "admin@college.com",
+    name: 'System Admin',
+    email: 'admin@college.com',
     password: hashedPassword,
-    role: "ADMIN",
+    role: 'ADMIN',
   });
 
-  return NextResponse.json({ message: "Admin Created" });
+  return NextResponse.json({ message: 'Admin Created' });
 }

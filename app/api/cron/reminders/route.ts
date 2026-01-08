@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import { checkAndSendReminders } from "@/lib/email-logic";
-import { connectDB } from "@/lib/db";
+import { NextResponse } from 'next/server';
+import { checkAndSendReminders } from '@/lib/email';
+import connectDB from '@/lib/db';
 
 export async function GET(request: Request) {
   // Security: Check for a secret key to prevent unauthorized triggers
@@ -11,6 +11,6 @@ export async function GET(request: Request) {
 
   await connectDB();
   await checkAndSendReminders();
-  
-  return NextResponse.json({ success: true, message: "Reminders sent" });
+
+  return NextResponse.json({ success: true, message: 'Reminders sent' });
 }

@@ -1,10 +1,15 @@
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { registerUser } from "@/lib/auth-actions"; // We will create this next
+'use client';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { registerUser } from '@/actions/auth';
 
 export default function RegisterPage() {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "", role: "STUDENT" });
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'STUDENT',
+  });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -13,8 +18,8 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       await registerUser(formData);
-      alert("Registration Successful! Redirecting to login...");
-      router.push("/login");
+      alert('Registration Successful! Redirecting to login...');
+      router.push('/login');
     } catch (err: any) {
       alert(err.message);
     } finally {
@@ -31,23 +36,52 @@ export default function RegisterPage() {
         button:hover { background: #059669; }
         .link { display: block; text-align: center; margin-top: 15px; color: #4f46e5; text-decoration: none; font-size: 0.9rem; }
       `}</style>
-      
-      <div className="reg-card">
-        <h2 style={{textAlign: 'center', marginBottom: '20px'}}>Create Account</h2>
+
+      <div className='reg-card'>
+        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>
+          Create Account
+        </h2>
         <form onSubmit={handleSubmit}>
-          <input type="text" placeholder="Full Name" required onChange={(e) => setFormData({...formData, name: e.target.value})} />
-          <input type="email" placeholder="Email" required onChange={(e) => setFormData({...formData, email: e.target.value})} />
-          <input type="password" placeholder="Password" required onChange={(e) => setFormData({...formData, password: e.target.value})} />
-          
-          <label style={{fontSize: '0.8rem', color: '#666'}}>Register as:</label>
-          <select onChange={(e) => setFormData({...formData, role: e.target.value})}>
-            <option value="STUDENT">Student</option>
-            <option value="FACULTY">Faculty</option>
-            <option value="ADMIN">Admin</option>
+          <input
+            type='text'
+            placeholder='Full Name'
+            required
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
+          <input
+            type='email'
+            placeholder='Email'
+            required
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+          />
+          <input
+            type='password'
+            placeholder='Password'
+            required
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+          />
+
+          <label style={{ fontSize: '0.8rem', color: '#666' }}>
+            Register as:
+          </label>
+          <select
+            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+          >
+            <option value='STUDENT'>Student</option>
+            <option value='FACULTY'>Faculty</option>
+            <option value='ADMIN'>Admin</option>
           </select>
 
-          <button type="submit" disabled={loading}>{loading ? "Saving..." : "Register"}</button>
-          <a href="/login" className="link">Already have an account? Login</a>
+          <button type='submit' disabled={loading}>
+            {loading ? 'Saving...' : 'Register'}
+          </button>
+          <a href='/login' className='link'>
+            Already have an account? Login
+          </a>
         </form>
       </div>
     </div>
@@ -55,5 +89,12 @@ export default function RegisterPage() {
 }
 
 const styles = {
-  container: { height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f3f4f6', fontFamily: 'sans-serif' }
+  container: {
+    height: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f3f4f6',
+    fontFamily: 'sans-serif',
+  },
 } as const;

@@ -1,6 +1,6 @@
-"use server";
+'use server';
 
-import { pusherServer } from "@/models/pusher";
+import { pusherServer } from '@/lib/pusher';
 
 /**
  * Trigger a real-time notification or message
@@ -16,15 +16,15 @@ export async function triggerPusherEvent(
   try {
     // Basic validation to ensure data is present
     if (!channel || !event || !data) {
-      throw new Error("Missing pusher parameters");
+      throw new Error('Missing pusher parameters');
     }
 
     await pusherServer.trigger(channel, event, data);
-    
+
     return { success: true };
   } catch (error) {
-    console.error("Pusher Trigger Error:", error);
-    return { success: false, error: "Failed to send real-time update" };
+    console.error('Pusher Trigger Error:', error);
+    return { success: false, error: 'Failed to send real-time update' };
   }
 }
 
@@ -36,5 +36,9 @@ export async function sendChatMessage(chatId: string, messageData: any) {
   // ...
 
   // Trigger real-time update to the specific chat channel
-  return await triggerPusherEvent(`presence-${chatId}`, "message:new", messageData);
+  return await triggerPusherEvent(
+    `presence-${chatId}`,
+    'message:new',
+    messageData
+  );
 }

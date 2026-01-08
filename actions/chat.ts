@@ -1,10 +1,14 @@
 'use server';
 
-import { connectDB } from "./db";
-import Message from "@/models/Message";
-import { pusherServer } from "./pusher"; // Pusher server-side config
+import connectDB from '@/lib/db';
+import Message from '@/models/message';
+import { pusherServer } from '@/lib/pusher';
 
-export async function sendMessage(senderId: string, receiverId: string, text: string) {
+export async function sendMessage(
+  senderId: string,
+  receiverId: string,
+  text: string
+) {
   await connectDB();
 
   const newMessage = await Message.create({ senderId, receiverId, text });

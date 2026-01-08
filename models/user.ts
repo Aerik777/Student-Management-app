@@ -35,6 +35,7 @@ const UserSchema = new Schema(
 );
 
 // This check prevents Mongoose from creating the model multiple times during Next.js Hot Reloads
-const User = models.User || model('User', UserSchema);
+const User = (models.User as any) || model('User', UserSchema);
+export type UserType = mongoose.InferSchemaType<typeof UserSchema>;
 
 export default User;

@@ -1,15 +1,15 @@
 'use server';
 
-import { connectDB } from "./db";
-import { Book, Issue } from "@/models/Library";
-import { revalidatePath } from "next/cache";
+import connectDB from '@/lib/db';
+import { Book, Issue } from '@/models/library';
+import { revalidatePath } from 'next/cache';
 
 export async function issueBook(bookId: string, studentId: string) {
   await connectDB();
 
   const book = await Book.findById(bookId);
   if (!book || book.availableCopies < 1) {
-    throw new Error("Book not available");
+    throw new Error('Book not available');
   }
 
   // 1. Create Issue Record
