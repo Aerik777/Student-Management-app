@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { getStudentStats } from '@/actions/student';
-import Student from '@/models/student';
+import User from '@/models/user';
 import connectDB from '@/lib/db';
 import { CheckCircle, XCircle, Clock, Percent } from 'lucide-react';
 import { authOptions } from '@/lib/auth';
@@ -15,8 +15,9 @@ export default async function AttendancePage() {
 
   await connectDB();
 
-  const student = (await Student.findOne({
+  const student = (await User.findOne({
     email: session.user.email,
+    role: 'STUDENT',
   }).lean()) as any;
 
   if (!student) {

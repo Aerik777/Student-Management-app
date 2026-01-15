@@ -19,5 +19,7 @@ const IssueSchema = new Schema({
   status: { type: String, enum: ['Issued', 'Returned'], default: 'Issued' },
 });
 
-export const Book = mongoose.models.Book || mongoose.model('Book', BookSchema);
-export const Issue = mongoose.models.Issue || mongoose.model('Issue', IssueSchema);
+export const Book =
+  (mongoose.models.Book as any) || mongoose.model('Book', BookSchema);
+export const Issue =
+  (mongoose.models.Issue as any) || mongoose.model('Issue', IssueSchema);

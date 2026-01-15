@@ -1,19 +1,19 @@
 'use server';
 import connectDB from '@/lib/db';
-import Student from '@/models/student';
+import User from '@/models/user';
 import { revalidatePath } from 'next/cache';
 
-export async function getStudents(query: string = '', dept: string = '') {
+export async function getStudents(query: string = '', classId: string = '') {
   await connectDB();
-  const filter: any = {};
+  const filter: any = { role: 'STUDENT' };
   if (query) {
     filter.$or = [
       { name: { $regex: query, $options: 'i' } },
       { rollNumber: { $regex: query, $options: 'i' } },
     ];
   }
-  if (dept) {
-    filter.department = dept;
+  if (classId) {
+    filter.classIds = classId;
   }
-  return await Student.find(filter).sort({ rollNumber: 1 }).lean();
+  return await User.find(filter).populate('classIds').sort({ name: 1 }).lean();
 }

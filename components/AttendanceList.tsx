@@ -13,12 +13,14 @@ export default function AttendanceList({
   students,
   facultyId,
 }: {
-  students: StudentProps[];
+  students: (StudentProps & { initialStatus?: string })[];
   facultyId: string;
 }) {
   // Local state to track attendance selections
   const [attendanceMap, setAttendanceMap] = useState<Record<string, string>>(
-    Object.fromEntries(students.map((s) => [s.id, 'Present']))
+    Object.fromEntries(
+      students.map((s) => [s.id, s.initialStatus || 'Present'])
+    )
   );
 
   const toggleStatus = (id: string) => {
@@ -43,18 +45,20 @@ export default function AttendanceList({
   return (
     <div className='bg-white rounded-lg shadow-lg overflow-hidden'>
       <table className='w-full text-left'>
-        <thead className='bg-gray-50 border-b'>
+        <thead className='bg-slate-100 border-b border-slate-300'>
           <tr>
-            <th className='p-4 font-semibold text-gray-700'>Roll No</th>
-            <th className='p-4 font-semibold text-gray-700'>Student Name</th>
-            <th className='p-4 font-semibold text-gray-700'>Status</th>
+            <th className='p-4 font-bold text-slate-900'>Roll No</th>
+            <th className='p-4 font-bold text-slate-900'>Student Name</th>
+            <th className='p-4 font-bold text-slate-900'>Status</th>
           </tr>
         </thead>
         <tbody>
           {students.map((student) => (
             <tr key={student.id} className='border-b hover:bg-gray-50'>
-              <td className='p-4'>{student.rollNumber}</td>
-              <td className='p-4 font-medium'>{student.name}</td>
+              <td className='p-4 text-slate-800 font-medium'>
+                {student.rollNumber}
+              </td>
+              <td className='p-4 font-bold text-slate-900'>{student.name}</td>
               <td className='p-4'>
                 <button
                   onClick={() => toggleStatus(student.id)}

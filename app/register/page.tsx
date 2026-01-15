@@ -31,7 +31,7 @@ export default function RegisterPage() {
     <div style={styles.container}>
       <style>{`
         .reg-card { background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #334155; border-radius: 6px; box-sizing: border-box; color: #000; font-weight: 500; }
         button { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 15px; }
         button:hover { background: #059669; }
         .link { display: block; text-align: center; margin-top: 15px; color: #4f46e5; text-decoration: none; font-size: 0.9rem; }
@@ -65,7 +65,9 @@ export default function RegisterPage() {
             }
           />
 
-          <label style={{ fontSize: '0.8rem', color: '#666' }}>
+          <label
+            style={{ fontSize: '0.85rem', color: '#000', fontWeight: '900' }}
+          >
             Register as:
           </label>
           <select

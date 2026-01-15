@@ -19,8 +19,33 @@ const UserSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ['ADMIN', 'TEACHER', 'STUDENT'],
+      enum: ['ADMIN', 'FACULTY', 'STUDENT'],
       default: 'STUDENT',
+      uppercase: true,
+      trim: true,
+    },
+    rollNumber: {
+      type: String,
+    },
+
+    qualification: {
+      type: String,
+    },
+    contact_no: {
+      type: Number,
+    },
+    address: {
+      type: String,
+    },
+    classIds: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Class',
+      },
+    ],
+    admitted_at: {
+      type: Date,
+      default: Date.now,
     },
     profileImage: {
       type: String,
@@ -35,6 +60,15 @@ const UserSchema = new Schema(
 );
 
 // This check prevents Mongoose from creating the model multiple times during Next.js Hot Reloads
+// We also force a re-registration if the existing model is missing the 'FACULTY' role
+if (
+  models.User &&
+  models.User.schema.path('role') &&
+  !models.User.schema.path('role').options.enum.includes('FACULTY')
+) {
+  delete (models as any).User;
+}
+
 const User = (models.User as any) || model('User', UserSchema);
 export type UserType = mongoose.InferSchemaType<typeof UserSchema>;
 

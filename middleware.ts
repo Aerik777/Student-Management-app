@@ -1,14 +1,20 @@
-import { withAuth } from "next-auth/middleware";
-import { NextResponse } from "next/server";
+import { withAuth } from 'next-auth/middleware';
+import { NextResponse } from 'next/server';
 
 export default withAuth(
   function middleware(req) {
     const token = req.nextauth.token;
     const path = req.nextUrl.pathname;
 
-    // 1. Role-Based Protection: Only ADMIN can access /admin routes
-    if (path.startsWith("/admin") && token?.role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/", req.url));
+    // 1. Role-Based Protection
+    if (path.startsWith('/admin') && token?.role !== 'ADMIN') {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+    if (path.startsWith('/faculty') && token?.role !== 'FACULTY') {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+    if (path.startsWith('/student') && token?.role !== 'STUDENT') {
+      return NextResponse.redirect(new URL('/', req.url));
     }
   },
   {
@@ -17,17 +23,18 @@ export default withAuth(
       authorized: ({ token }) => !!token,
     },
     pages: {
-      signIn: "/login",
+      signIn: '/login',
     },
   }
 );
 
 export const config = {
   matcher: [
-    "/admin/:path*",
-    "/student/:path*",
-    "/attendance/:path*",
-    "/profile/:path*",
-    "/dashboard/:path*",
+    '/admin/:path*',
+    '/faculty/:path*',
+    '/student/:path*',
+    '/attendance/:path*',
+    '/profile/:path*',
+    '/dashboard/:path*',
   ],
 };

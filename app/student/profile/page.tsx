@@ -1,21 +1,17 @@
-import IDCard from '@/components/IDCard';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import ProfileView from '@/components/profile-view';
+import User from '@/models/user';
+import connectDB from '@/lib/db';
 
-export default async function ProfilePage() {
+export default async function StudentProfilePage() {
   const session = await getServerSession(authOptions);
-
-  // In a real app, fetch these details from your MongoDB 'Student' collection
-  const studentData = {
-    name: session?.user?.name || 'Student Name',
-    rollNumber: 'CS2026-001',
-    department: 'Computer Science',
-  };
+  await connectDB();
+  const userData = await User.findById((session?.user as any).id);
 
   return (
-    <div className='p-8 flex flex-col items-center'>
-      <h1 className='text-2xl font-bold mb-8'>Your Digital ID Card</h1>
-      <IDCard student={studentData} />
+    <div className='h-full'>
+      <ProfileView user={JSON.parse(JSON.stringify(userData))} />
     </div>
   );
 }

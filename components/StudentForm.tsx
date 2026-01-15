@@ -71,22 +71,6 @@ export default function StudentForm() {
             <p className='text-red-500 text-xs'>{errors.rollNumber.message}</p>
           )}
         </div>
-
-        <div>
-          <label className='block text-sm font-medium'>Department</label>
-          <select
-            {...register('department')}
-            className='w-full border p-2 rounded mt-1'
-          >
-            <option value=''>Select...</option>
-            <option value='CS'>Computer Science</option>
-            <option value='EE'>Electrical</option>
-            <option value='ME'>Mechanical</option>
-          </select>
-          {errors.department && (
-            <p className='text-red-500 text-xs'>{errors.department.message}</p>
-          )}
-        </div>
       </div>
 
       <button

@@ -14,7 +14,7 @@ const AttendanceSchema = new Schema<IAttendance>(
   {
     studentId: {
       type: Schema.Types.ObjectId,
-      ref: 'Student',
+      ref: 'User',
       required: true,
     },
     courseId: {
@@ -44,7 +44,7 @@ const AttendanceSchema = new Schema<IAttendance>(
 // AttendanceSchema.index({ studentId: 1, courseId: 1, date: 1 }, { unique: true });
 
 const Attendance: Model<IAttendance> =
-  mongoose.models.Attendance ||
+  (mongoose.models.Attendance as any) ||
   mongoose.model<IAttendance>('Attendance', AttendanceSchema);
 
 export default Attendance;

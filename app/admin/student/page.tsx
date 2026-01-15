@@ -1,40 +1,55 @@
 import { getStudents } from '@/actions/common';
+import { getClasses } from '@/actions/admin';
 import SearchFilters from '@/components/SearchFilters';
 
 export default async function StudentListPage({
   searchParams,
 }: {
-  searchParams?: { query?: string; dept?: string };
+  searchParams?: { query?: string; classId?: string };
 }) {
   const query = searchParams?.query || '';
-  const dept = searchParams?.dept || '';
+  const classId = searchParams?.classId || '';
 
-  const students = await getStudents(query, dept);
+  const students = await getStudents(query, classId);
+  const classes = await getClasses();
 
   return (
     <div className='p-6'>
-      <h1 className='text-2xl font-bold mb-4'>Manage Students</h1>
+      <h1 className='text-2xl font-bold text-slate-950 mb-4'>
+        Manage Students
+      </h1>
 
-      <SearchFilters />
+      <SearchFilters classes={classes} />
 
       <div className='bg-white rounded-lg shadow overflow-hidden'>
         <table className='w-full text-left'>
-          <thead className='bg-gray-50 uppercase text-xs font-semibold text-gray-600'>
+          <thead className='bg-slate-100 uppercase text-xs font-bold text-slate-900 border-b border-slate-300'>
             <tr>
               <th className='p-4'>Name</th>
-              <th className='p-4'>Roll Number</th>
-              <th className='p-4'>Department</th>
+              <th className='p-4'>Class</th>
             </tr>
           </thead>
           <tbody>
             {students.map((student: any) => (
               <tr key={student._id} className='border-t hover:bg-gray-50'>
-                <td className='p-4 font-medium'>{student.name}</td>
-                <td className='p-4'>{student.rollNumber}</td>
+                <td className='p-4 font-bold text-slate-900'>{student.name}</td>
                 <td className='p-4'>
-                  <span className='px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm'>
-                    {student.department}
-                  </span>
+                  {student.classIds && student.classIds.length > 0 ? (
+                    <div className='flex gap-2 flex-wrap'>
+                      {student.classIds.map((cls: any) => (
+                        <span
+                          key={cls._id}
+                          className='px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm'
+                        >
+                          {cls.grade}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className='text-gray-400 text-sm'>
+                      No class assigned
+                    </span>
+                  )}
                 </td>
               </tr>
             ))}

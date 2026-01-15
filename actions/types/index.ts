@@ -5,7 +5,7 @@ export interface IStudent {
   name: string;
   email: string;
   rollNumber: string;
-  department: string;
+
   enrollmentDate: Date;
 }
 

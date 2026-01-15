@@ -13,8 +13,12 @@ export default async function StudentLibrary() {
   if (!session) {
     return (
       <div className='p-8'>
-        <h1 className='text-2xl font-bold mb-6'>My Borrowed Books</h1>
-        <p className='text-gray-400'>Please log in to view your books.</p>
+        <h1 className='text-2xl font-bold text-slate-950 mb-6'>
+          My Borrowed Books
+        </h1>
+        <p className='text-slate-700 font-semibold'>
+          Please log in to view your books.
+        </p>
       </div>
     );
   }
@@ -27,7 +31,9 @@ export default async function StudentLibrary() {
 
   return (
     <div className='p-8'>
-      <h1 className='text-2xl font-bold mb-6'>My Borrowed Books</h1>
+      <h1 className='text-2xl font-bold text-slate-950 mb-6'>
+        My Borrowed Books
+      </h1>
       <div className='grid gap-4'>
         {myBooks.map((record: any) => {
           const isOverdue = new Date() > new Date(record.dueDate);
@@ -38,7 +44,7 @@ export default async function StudentLibrary() {
             >
               <div>
                 <h3 className='font-bold text-lg'>{record.bookId.title}</h3>
-                <p className='text-gray-500 text-sm'>
+                <p className='text-slate-700 text-sm font-medium'>
                   Issued on: {new Date(record.issueDate).toLocaleDateString()}
                 </p>
               </div>
@@ -60,7 +66,9 @@ export default async function StudentLibrary() {
           );
         })}
         {myBooks.length === 0 && (
-          <p className='text-gray-400'>You haven't borrowed any books yet.</p>
+          <p className='text-slate-700 font-semibold'>
+            You haven't borrowed any books yet.
+          </p>
         )}
       </div>
     </div>
