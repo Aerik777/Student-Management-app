@@ -1,7 +1,18 @@
 'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { registerUser } from '@/actions/auth';
+import {
+  GraduationCap,
+  User,
+  Mail,
+  Lock,
+  UserCheck,
+  ArrowRight,
+} from 'lucide-react';
+import Link from 'next/link';
+import CustomToast from '@/components/CustomToast';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -10,6 +21,12 @@ export default function RegisterPage() {
     password: '',
     role: 'STUDENT',
   });
+  const [toast, setToast] = useState<{
+    message: string;
+    type: 'success' | 'error' | 'info';
+    isVisible: boolean;
+  }>({ message: '', type: 'info', isVisible: false });
+
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -18,85 +35,173 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       await registerUser(formData);
-      alert('Registration Successful! Redirecting to login...');
-      router.push('/login');
+      setToast({
+        message:
+          'Registration Successful! Your account is pending admin approval. Redirecting...',
+        type: 'success',
+        isVisible: true,
+      });
+      setTimeout(() => router.push('/login'), 3000);
     } catch (err: any) {
-      alert(err.message);
+      setToast({ message: err.message, type: 'error', isVisible: true });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <style>{`
-        .reg-card { background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #334155; border-radius: 6px; box-sizing: border-box; color: #000; font-weight: 500; }
-        button { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 15px; }
-        button:hover { background: #059669; }
-        .link { display: block; text-align: center; margin-top: 15px; color: #4f46e5; text-decoration: none; font-size: 0.9rem; }
-      `}</style>
+    <div className='min-h-screen bg-slate-50 flex items-center justify-center p-4 py-12'>
+      <CustomToast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={() => setToast({ ...toast, isVisible: false })}
+      />
+      <div className='max-w-xl w-full bg-white rounded-3xl shadow-2xl shadow-indigo-100 overflow-hidden flex flex-col md:flex-row'>
+        {/* Left Side - Info */}
+        <div className='bg-indigo-600 md:w-5/12 p-8 text-white flex flex-col justify-between'>
+          <div>
+            <div className='flex items-center gap-2 mb-8'>
+              <GraduationCap className='h-8 w-8' />
+              <span className='text-xl font-bold tracking-tight'>
+                EduManage
+              </span>
+            </div>
+            <h2 className='text-3xl font-extrabold mb-4 leading-tight'>
+              Join Our Academic Community
+            </h2>
+            <p className='text-indigo-100 text-sm opacity-90 leading-relaxed'>
+              Create an account to access assignments, results, and real-time
+              communication with your faculty.
+            </p>
+          </div>
 
-      <div className='reg-card'>
-        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>
-          Create Account
-        </h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type='text'
-            placeholder='Full Name'
-            required
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          />
-          <input
-            type='email'
-            placeholder='Email'
-            required
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
-          />
-          <input
-            type='password'
-            placeholder='Password'
-            required
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-          />
+          <div className='hidden md:block'>
+            <div className='flex items-center gap-3 mb-4'>
+              <div className='bg-white/10 p-2 rounded-lg'>
+                <UserCheck className='h-5 w-5 text-indigo-200' />
+              </div>
+              <div className='text-xs'>
+                <p className='font-bold'>Admin Verified</p>
+                <p className='text-indigo-200 opacity-70'>
+                  Secure access control
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <label
-            style={{ fontSize: '0.85rem', color: '#000', fontWeight: '900' }}
-          >
-            Register as:
-          </label>
-          <select
-            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-          >
-            <option value='STUDENT'>Student</option>
-            <option value='FACULTY'>Faculty</option>
-            <option value='ADMIN'>Admin</option>
-          </select>
+        {/* Right Side - Form */}
+        <div className='md:w-7/12 p-8 md:p-12 bg-white'>
+          <div className='mb-8'>
+            <h3 className='text-2xl font-bold text-slate-900 mb-1'>
+              Create Account
+            </h3>
+            <p className='text-slate-500 text-sm font-medium'>
+              Enter your details to register
+            </p>
+          </div>
 
-          <button type='submit' disabled={loading}>
-            {loading ? 'Saving...' : 'Register'}
-          </button>
-          <a href='/login' className='link'>
-            Already have an account? Login
-          </a>
-        </form>
+          <form onSubmit={handleSubmit} className='space-y-4'>
+            <div>
+              <label className='block text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider'>
+                Full Name
+              </label>
+              <div className='relative'>
+                <User className='absolute left-3 top-3 h-5 w-5 text-slate-400' />
+                <input
+                  type='text'
+                  required
+                  placeholder='John Doe'
+                  className='w-full pl-10 pr-4 py-3 bg-slate-50 border-none rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-600 outline-none transition-all placeholder:text-slate-400 font-medium'
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className='block text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider'>
+                Email Address
+              </label>
+              <div className='relative'>
+                <Mail className='absolute left-3 top-3 h-5 w-5 text-slate-400' />
+                <input
+                  type='email'
+                  required
+                  placeholder='john@example.com'
+                  className='w-full pl-10 pr-4 py-3 bg-slate-50 border-none rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-600 outline-none transition-all placeholder:text-slate-400 font-medium'
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className='block text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider'>
+                Password
+              </label>
+              <div className='relative'>
+                <Lock className='absolute left-3 top-3 h-5 w-5 text-slate-400' />
+                <input
+                  type='password'
+                  required
+                  placeholder='••••••••'
+                  className='w-full pl-10 pr-4 py-3 bg-slate-50 border-none rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-600 outline-none transition-all placeholder:text-slate-400 font-medium'
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className='block text-xs font-bold text-slate-500 uppercase mb-1 tracking-wider'>
+                Register As
+              </label>
+              <select
+                className='w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-slate-900 focus:ring-2 focus:ring-indigo-600 outline-none transition-all font-bold appearance-none'
+                onChange={(e) =>
+                  setFormData({ ...formData, role: e.target.value })
+                }
+              >
+                <option value='STUDENT'>Student</option>
+                <option value='FACULTY'>Faculty</option>
+                <option value='ADMIN'>Administrator</option>
+              </select>
+            </div>
+
+            <button
+              type='submit'
+              disabled={loading}
+              className='w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-100 transition-all flex items-center justify-center gap-2 group'
+            >
+              {loading ? (
+                'Processing...'
+              ) : (
+                <>
+                  Register Now
+                  <ArrowRight className='h-5 w-5 group-hover:translate-x-1 transition-transform' />
+                </>
+              )}
+            </button>
+
+            <div className='pt-4 text-center'>
+              <p className='text-sm text-slate-500 font-medium'>
+                Already have an account?{' '}
+                <Link
+                  href='/studentlogin'
+                  className='text-indigo-600 font-bold hover:underline'
+                >
+                  Sign In
+                </Link>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    height: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f3f4f6',
-    fontFamily: 'sans-serif',
-  },
-} as const;

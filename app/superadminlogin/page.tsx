@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { GraduationCap } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -84,6 +85,15 @@ export default function LoginPage() {
           >
             {loading ? 'Authenticating...' : 'Sign In'}
           </button>
+          <p className='text-center text-sm text-slate-600 mt-4'>
+            Don't have an account?{' '}
+            <Link
+              href='/register'
+              className='text-indigo-600 font-bold hover:underline'
+            >
+              Sign Up
+            </Link>
+          </p>
         </form>
       </div>
     </div>

@@ -4,12 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { updateUser, getClasses } from '@/actions/admin';
 import ClassMultiSelect from '@/components/ClassMultiSelect';
-import User from '@/models/user'; // This won't work on client side directly if imported from models
+import CustomToast from '@/components/CustomToast';
 
 // We need an action to fetch a single user
-// I'll check if it's in actions/admin.ts. If not, I'll add it or use a separate endpoint.
-// For now, I'll assume I need to add getUserById to actions/admin.ts
-
 export default function EditUserPage() {
   const router = useRouter();
   const params = useParams();
@@ -18,6 +15,12 @@ export default function EditUserPage() {
   const [classes, setClasses] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: 'success' | 'error' | 'info';
+    isVisible: boolean;
+  }>({ message: '', type: 'info', isVisible: false });
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -36,7 +39,6 @@ export default function EditUserPage() {
         const classesData = await getClasses();
         setClasses(classesData);
 
-        // Fetch user data via a new action I will create
         const response = await fetch(`/api/users/${userId}`);
         const userData = await response.json();
 
@@ -53,7 +55,11 @@ export default function EditUserPage() {
         });
       } catch (error) {
         console.error(error);
-        alert('Error loading user data');
+        setToast({
+          message: 'Error loading user data',
+          type: 'error',
+          isVisible: true,
+        });
       } finally {
         setFetching(false);
       }
@@ -66,10 +72,19 @@ export default function EditUserPage() {
     setLoading(true);
     try {
       await updateUser(userId, formData);
-      router.push('/admin/users');
+      setToast({
+        message: 'User updated successfully',
+        type: 'success',
+        isVisible: true,
+      });
+      setTimeout(() => router.push('/admin/users'), 2000);
     } catch (error) {
       console.error(error);
-      alert('Error updating user');
+      setToast({
+        message: 'Error updating user',
+        type: 'error',
+        isVisible: true,
+      });
     } finally {
       setLoading(false);
     }
@@ -84,6 +99,12 @@ export default function EditUserPage() {
 
   return (
     <div className='max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md border border-slate-200'>
+      <CustomToast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={() => setToast({ ...toast, isVisible: false })}
+      />
       <h1 className='text-2xl font-bold text-slate-950 mb-6'>
         Edit User: {formData.name}
       </h1>

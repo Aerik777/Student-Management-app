@@ -8,12 +8,10 @@ A comprehensive Full-Stack Student Management System built with **Next.js 14**, 
 
 ### 👤 User Roles & Dashboards
 
-- **SuperAdmin**: System-level configuration and high-level oversight.
 - **Admin**:
   - CRUD operations for Students and Faculty.
   - Manage Departments and Courses.
   - Track Attendance and Grades.
-  - Fee management integration.
 - **Faculty**:
   - Create and manage assignment questions.
   - Grade student submissions.
@@ -23,15 +21,13 @@ A comprehensive Full-Stack Student Management System built with **Next.js 14**, 
   - Submit assignments (PDF support).
   - View grades and attendance.
   - Real-time messaging with faculty.
-  - Pay fees via secure payment gateway.
-
+  
 ### 🛠️ Technical Capabilities
 
 - **Real-time Messaging**: Powered by **Pusher** for instant chat between students and faculty.
 - **Secure Authentication**: Robust role-based access control (RBAC) using **NextAuth.js**.
 - **Assignment Handling**: Support for PDF submissions and teacher feedback.
 - **Data Export**: Generate PDFs for reports or certificates using **jsPDF** and **html2canvas**.
-- **Payments**: Integrated with **Stripe** for handling tuition fees and other payments.
 - **Email Notifications**: Automated notifications via **Nodemailer**.
 
 ---
@@ -44,7 +40,6 @@ A comprehensive Full-Stack Student Management System built with **Next.js 14**, 
 - **Real-time**: [Pusher](https://pusher.com/).
 - **Authentication**: [NextAuth.js](https://next-auth.js.org/).
 - **Forms**: [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/).
-- **Payments**: [Stripe](https://stripe.com/).
 
 ---
 
@@ -55,7 +50,6 @@ A comprehensive Full-Stack Student Management System built with **Next.js 14**, 
 - Node.js (v18 or later)
 - MongoDB account (local or Atlas)
 - Pusher account
-- Stripe account (for payments)
 
 ### 2. Clone the repository
 

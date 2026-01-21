@@ -12,12 +12,20 @@ export default function LandingPage() {
             EduManage
           </span>
         </div>
-        <Link
-          href='/superadminlogin'
-          className='bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-all'
-        >
-          Sign In
-        </Link>
+        <div className='flex items-center gap-4'>
+          <Link
+            href='/register'
+            className='text-slate-600 hover:text-indigo-600 font-medium transition-colors'
+          >
+            Sign Up
+          </Link>
+          <Link
+            href='/superadminlogin'
+            className='bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-all'
+          >
+            Sign In
+          </Link>
+        </div>
       </nav>
 
       {/* Hero Section */}
@@ -31,6 +39,14 @@ export default function LandingPage() {
             A comprehensive ERP solution to streamline attendance, library
             assets, real-time communication, and academic performance tracking.
           </p>
+          <div className='mt-10 flex justify-center gap-4'>
+            <Link
+              href='/register'
+              className='bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl font-bold text-lg shadow-lg shadow-indigo-200 transition-all hover:scale-105'
+            >
+              Get Started Free
+            </Link>
+          </div>
         </div>
 
         {/* Feature Grid / Role Selection */}

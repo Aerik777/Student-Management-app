@@ -53,7 +53,7 @@ const UserSchema = new Schema(
     },
     isActive: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   { timestamps: true } // Automatically creates createdAt and updatedAt fields

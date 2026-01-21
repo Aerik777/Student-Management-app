@@ -46,8 +46,9 @@ export default function FacultyAssignmentsClient({
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [loadingSubmissions, setLoadingSubmissions] = useState(false);
   const [rejectRemarks, setRejectRemarks] = useState<{ [key: string]: string }>(
-    {}
+    {},
   );
+  const [grades, setGrades] = useState<{ [key: string]: string }>({});
 
   const handleViewSubmissions = async (assignmentId: string) => {
     setLoadingSubmissions(true);
@@ -59,6 +60,14 @@ export default function FacultyAssignmentsClient({
     const { getSubmissions } = await import('@/actions/faculty');
     const subs = await getSubmissions(assignmentId);
     setSubmissions(subs);
+
+    // Initialize grades state
+    const initialGrades: any = {};
+    subs.forEach((s: any) => {
+      if (s.grade) initialGrades[s._id] = s.grade.toString();
+    });
+    setGrades(initialGrades);
+
     setLoadingSubmissions(false);
   };
 
@@ -66,11 +75,17 @@ export default function FacultyAssignmentsClient({
     const { updateSubmissionStatus } = await import('@/actions/faculty');
     const remarks =
       status === 'rejected' ? rejectRemarks[submissionId] : undefined;
-    await updateSubmissionStatus(submissionId, status, remarks);
+    const grade = grades[submissionId]
+      ? parseInt(grades[submissionId])
+      : undefined;
+
+    await updateSubmissionStatus(submissionId, status, remarks, grade);
 
     // Refresh local list
     setSubmissions((prev) =>
-      prev.map((s) => (s._id === submissionId ? { ...s, status, remarks } : s))
+      prev.map((s) =>
+        s._id === submissionId ? { ...s, status, remarks, grade } : s,
+      ),
     );
   };
 
@@ -208,7 +223,8 @@ export default function FacultyAssignmentsClient({
                       <th className='p-3'>Date</th>
                       <th className='p-3'>File</th>
                       <th className='p-3'>Status</th>
-                      <th className='p-3'>Action</th>
+                      <th className='p-3'>Grade</th>
+                      <th className='p-3 text-right'>Action</th>
                     </tr>
                   </thead>
                   <tbody className='divide-y'>
@@ -231,49 +247,70 @@ export default function FacultyAssignmentsClient({
                         </td>
                         <td className='p-3'>
                           <span
-                            className={`px-2 py-1 rounded text-xs font-bold ${
+                            className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                               sub.status === 'accepted'
-                                ? 'bg-green-100 text-green-800'
+                                ? 'bg-emerald-100 text-emerald-700'
                                 : sub.status === 'rejected'
-                                ? 'bg-red-100 text-red-800'
-                                : 'bg-yellow-100 text-yellow-800'
+                                  ? 'bg-rose-100 text-rose-700'
+                                  : 'bg-amber-100 text-amber-700'
                             }`}
                           >
-                            {sub.status.toUpperCase()}
+                            {sub.status}
                           </span>
                         </td>
                         <td className='p-3'>
+                          <input
+                            type='number'
+                            min='0'
+                            max='100'
+                            placeholder='0-100'
+                            className='w-20 p-2 border border-slate-200 rounded-lg text-sm bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none font-bold'
+                            value={grades[sub._id] || ''}
+                            onChange={(e) =>
+                              setGrades({
+                                ...grades,
+                                [sub._id]: e.target.value,
+                              })
+                            }
+                          />
+                        </td>
+                        <td className='p-3'>
                           <div className='flex flex-col gap-2'>
-                            <div className='flex gap-2'>
+                            <div className='flex justify-end gap-2'>
                               <button
                                 onClick={() =>
                                   handleStatusUpdate(sub._id, 'accepted')
                                 }
-                                className='bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs'
+                                className='bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors'
                               >
-                                Accept
+                                Grade/Accept
                               </button>
                               <button
                                 onClick={() =>
                                   handleStatusUpdate(sub._id, 'rejected')
                                 }
-                                className='bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs'
+                                className='bg-rose-50 text-rose-600 hover:bg-rose-100 px-3 py-1.5 rounded-lg text-[10px] font-bold border border-rose-200 transition-colors'
                               >
                                 Reject
                               </button>
                             </div>
-                            <input
-                              type='text'
-                              placeholder='Remarks (if rejecting)...'
-                              className='border rounded px-2 py-1 text-xs w-full mt-1 text-slate-900'
-                              value={rejectRemarks[sub._id] || ''}
-                              onChange={(e) =>
-                                setRejectRemarks((prev) => ({
-                                  ...prev,
-                                  [sub._id]: e.target.value,
-                                }))
-                              }
-                            />
+                            {sub.status === 'rejected' ||
+                            rejectRemarks[sub._id] ? (
+                              <input
+                                type='text'
+                                placeholder='Rejection reason...'
+                                className='border border-slate-200 rounded-lg px-2 py-1.5 text-[10px] w-full mt-1 text-slate-900 bg-slate-50'
+                                value={
+                                  rejectRemarks[sub._id] || sub.remarks || ''
+                                }
+                                onChange={(e) =>
+                                  setRejectRemarks((prev) => ({
+                                    ...prev,
+                                    [sub._id]: e.target.value,
+                                  }))
+                                }
+                              />
+                            ) : null}
                           </div>
                         </td>
                       </tr>

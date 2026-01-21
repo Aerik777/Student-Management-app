@@ -24,6 +24,11 @@ const AssignmentAnswerSchema = new Schema(
     remarks: {
       type: String, // Feedback from teacher
     },
+    grade: {
+      type: Number,
+      min: 0,
+      max: 100,
+    },
     submitted_at: {
       type: Date,
       default: Date.now,

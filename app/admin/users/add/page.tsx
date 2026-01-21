@@ -4,11 +4,18 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createUser, getClasses } from '@/actions/admin';
 import ClassMultiSelect from '@/components/ClassMultiSelect';
+import CustomToast from '@/components/CustomToast';
 
 export default function AddUserPage() {
   const router = useRouter();
   const [classes, setClasses] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: 'success' | 'error' | 'info';
+    isVisible: boolean;
+  }>({ message: '', type: 'info', isVisible: false });
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -31,10 +38,19 @@ export default function AddUserPage() {
     setLoading(true);
     try {
       await createUser(formData);
-      router.push('/admin/users');
+      setToast({
+        message: 'User created successfully',
+        type: 'success',
+        isVisible: true,
+      });
+      setTimeout(() => router.push('/admin/users'), 2000);
     } catch (error) {
       console.error(error);
-      alert('Error creating user');
+      setToast({
+        message: 'Error creating user',
+        type: 'error',
+        isVisible: true,
+      });
     } finally {
       setLoading(false);
     }
@@ -42,6 +58,12 @@ export default function AddUserPage() {
 
   return (
     <div className='max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md'>
+      <CustomToast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={() => setToast({ ...toast, isVisible: false })}
+      />
       <h1 className='text-2xl font-bold text-slate-950 mb-6'>Add New User</h1>
       <form onSubmit={handleSubmit} className='space-y-4'>
         <div className='grid grid-cols-2 gap-4'>

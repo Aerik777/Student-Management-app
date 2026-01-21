@@ -5,6 +5,7 @@ import AssignmentAnswer from '@/models/assignmentAnswer';
 import AssignmentQuestion from '@/models/assignmentQuestion';
 import Attendance from '@/models/attendance';
 import User from '@/models/user';
+import StudyMaterial from '@/models/studyMaterial';
 import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcryptjs';
 
@@ -87,4 +88,12 @@ export async function getStudentStats(studentId: string) {
     absent,
     percentage,
   };
+}
+
+export async function getStudyMaterialsForStudent(classIds: string[]) {
+  await connectDB();
+  return await StudyMaterial.find({ classId: { $in: classIds } })
+    .populate('teacherId')
+    .populate('classId')
+    .lean();
 }

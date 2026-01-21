@@ -10,6 +10,7 @@ export async function getUsers(filters?: {
   name?: string;
   role?: string;
   classId?: string;
+  isActive?: boolean;
 }) {
   await connectDB();
   const query: any = {};
@@ -22,6 +23,9 @@ export async function getUsers(filters?: {
   }
   if (filters?.classId) {
     query.classIds = filters.classId;
+  }
+  if (filters?.isActive !== undefined) {
+    query.isActive = filters.isActive;
   }
 
   return await User.find(query)
@@ -55,6 +59,7 @@ export async function createUser(data: any) {
     classIds: classIds || [],
     rollNumber,
     qualification,
+    isActive: true,
   });
 
   revalidatePath('/admin/users');
@@ -75,6 +80,13 @@ export async function deleteUser(id: string) {
   return { success: true };
 }
 
+export async function approveUser(id: string) {
+  await connectDB();
+  await User.findByIdAndUpdate(id, { isActive: true });
+  revalidatePath('/admin/users');
+  return { success: true };
+}
+
 export async function getClasses() {
   await connectDB();
   return await Class.find({}).lean();
@@ -85,4 +97,13 @@ export async function createClass(grade: string) {
   const newClass = await Class.create({ grade });
   revalidatePath('/admin/classes'); // Assuming we might have a classes page
   return JSON.parse(JSON.stringify(newClass));
+}
+
+export async function deleteClass(id: string) {
+  await connectDB();
+  // Optional: Remove this class reference from all users
+  await User.updateMany({ classIds: id }, { $pull: { classIds: id } });
+  await Class.findByIdAndDelete(id);
+  revalidatePath('/admin/classes');
+  return { success: true };
 }

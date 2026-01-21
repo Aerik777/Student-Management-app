@@ -14,6 +14,7 @@ import {
   UserCircle,
   ChevronLeft,
   ChevronRight,
+  FileText,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { getUnreadCount } from '@/actions/messages';
@@ -103,6 +104,11 @@ export default function DashboardSidebar({
         icon: MessageSquare,
         badge: unreadCount,
       },
+      {
+        name: 'Study Material',
+        href: '/faculty/study-material',
+        icon: FileText,
+      },
       { name: 'Profile', href: '/faculty/profile', icon: UserCircle },
     ],
     STUDENT: [
@@ -113,6 +119,11 @@ export default function DashboardSidebar({
         href: '/student/messages',
         icon: MessageSquare,
         badge: unreadCount,
+      },
+      {
+        name: 'Study Material',
+        href: '/student/study-material',
+        icon: FileText,
       },
       { name: 'Profile', href: '/student/profile', icon: UserCircle },
     ],
@@ -151,7 +162,7 @@ export default function DashboardSidebar({
           open ? 'translate-x-0 w-64' : '-translate-x-full md:translate-x-0',
           collapsed && !open ? 'md:w-20' : 'md:w-64',
           config.bg,
-          config.text
+          config.text,
         )}
       >
         <div className='p-4 flex flex-col h-full'>
@@ -206,7 +217,7 @@ export default function DashboardSidebar({
                   pathname === route.href
                     ? config.active
                     : 'text-white/80 hover:bg-white/10',
-                  collapsed && !open ? 'justify-center' : ''
+                  collapsed && !open ? 'justify-center' : '',
                 )}
                 title={collapsed && !open ? route.name : undefined}
               >
@@ -218,7 +229,7 @@ export default function DashboardSidebar({
                   <span
                     className={cn(
                       'absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full',
-                      collapsed && !open ? 'top-0 right-0' : ''
+                      collapsed && !open ? 'top-0 right-0' : '',
                     )}
                   >
                     {(route as any).badge}

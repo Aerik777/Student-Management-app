@@ -1,16 +1,30 @@
 import { getUsers, getClasses } from '@/actions/admin';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { Search, CheckCircle, Clock } from 'lucide-react';
+import UserApprovalButton from '@/components/UserApprovalButton';
 
 export default async function AdminUsersPage({
   searchParams,
 }: {
-  searchParams: { q?: string; role?: string; classId?: string };
+  searchParams: {
+    q?: string;
+    role?: string;
+    classId?: string;
+    status?: string;
+  };
 }) {
+  const isActiveFilter =
+    searchParams.status === 'active'
+      ? true
+      : searchParams.status === 'pending'
+        ? false
+        : undefined;
+
   const users = await getUsers({
     name: searchParams.q,
     role: searchParams.role,
     classId: searchParams.classId,
+    isActive: isActiveFilter,
   });
 
   const classes = await getClasses();
@@ -76,6 +90,20 @@ export default async function AdminUsersPage({
               ))}
             </select>
           </div>
+          <div className='w-full md:w-32'>
+            <label className='text-xs font-bold text-slate-500 uppercase'>
+              Status
+            </label>
+            <select
+              name='status'
+              defaultValue={searchParams.status || ''}
+              className='w-full border border-slate-300 rounded-md p-2 text-sm text-slate-900'
+            >
+              <option value=''>All</option>
+              <option value='active'>Active</option>
+              <option value='pending'>Pending</option>
+            </select>
+          </div>
           <button
             type='submit'
             className='bg-slate-900 text-white px-4 py-2 rounded-md text-sm font-bold w-full md:w-auto hover:bg-slate-800'
@@ -101,6 +129,7 @@ export default async function AdminUsersPage({
               <th className='p-4'>Email</th>
               <th className='p-4'>Role</th>
               <th className='p-4'>Class</th>
+              <th className='p-4'>Status</th>
               <th className='p-4'>Actions</th>
             </tr>
           </thead>
@@ -115,8 +144,8 @@ export default async function AdminUsersPage({
                       user.role === 'ADMIN'
                         ? 'bg-purple-100 text-purple-800'
                         : user.role === 'FACULTY'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-blue-100 text-blue-800'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-blue-100 text-blue-800'
                     }`}
                   >
                     {user.role}
@@ -127,14 +156,27 @@ export default async function AdminUsersPage({
                     ? user.classIds.map((c: any) => c.grade).join(', ')
                     : 'N/A'}
                 </td>
+                <td className='p-4'>
+                  {user.isActive ? (
+                    <div className='flex items-center text-green-600 font-bold text-xs uppercase'>
+                      <CheckCircle className='w-3 h-3 mr-1' /> Active
+                    </div>
+                  ) : (
+                    <div className='flex items-center text-orange-600 font-bold text-xs uppercase'>
+                      <Clock className='w-3 h-3 mr-1' /> Pending
+                    </div>
+                  )}
+                </td>
                 <td className='p-4 space-x-2'>
+                  {!user.isActive && (
+                    <UserApprovalButton userId={user._id.toString()} />
+                  )}
                   <Link
                     href={`/admin/users/edit/${user._id}`}
-                    className='text-indigo-600 hover:text-indigo-900'
+                    className='text-indigo-600 hover:text-indigo-900 text-sm font-medium'
                   >
                     Edit
                   </Link>
-                  {/* Delete button would go here with a Client Component for handling the action */}
                 </td>
               </tr>
             ))}

@@ -26,6 +26,10 @@ export const authOptions: NextAuthOptions = {
         );
         if (!isPasswordCorrect) throw new Error('Invalid password');
 
+        if (!user.isActive) {
+          throw new Error('Account pending admin approval');
+        }
+
         return {
           id: user._id.toString(),
           email: user.email,
