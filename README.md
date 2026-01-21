@@ -8,7 +8,6 @@ A comprehensive Full-Stack Student Management System built with **Next.js 14**, 
 
 ### 👤 User Roles & Dashboards
 
-- **SuperAdmin**: System-level configuration and high-level oversight.
 - **Admin**:
   - CRUD operations for Students and Faculty.
   - Manage Departments and Courses.
